@@ -1,0 +1,35 @@
+virtualenv /home/rmb218/rds/hpc-work/python_env/topmed
+source /home/rmb218/rds/hpc-work/python_env/topmed/bin/activate
+import requests
+
+##   Imputation server URL
+base = 'https://imputation.biodatacatalyst.nhlbi.nih.gov/api/v2'
+##  NB. Tokens are only valid for 30 days
+token = 'eyJjdHkiOiJ0ZXh0XC9wbGFpbiIsImFsZyI6IkhTMjU2In0.eyJtYWlsIjoicm1iMjE4QGNhbS5hYy51ayIsImFwaV9oYXNoIjoiWlVMc0JDRTZrVmNrY0xDYXV4UWJjdkhDRXdyNGo4IiwiZXhwaXJlIjoxNzIwMDAwODA3MzA2LCJuYW1lIjoiUm9pc2luIEJvZ2dhbiIsImFwaSI6dHJ1ZSwidXNlcm5hbWUiOiJyb2lzaW5ib2dnYW4ifQ.ZFhGOkNbkN-KlhhfoRc_cO6t2quj1fbkaack2RksF8g'
+##  Add API token to headers
+headers = {'X-Auth-Token' : token }
+data = {
+  'job-name': 'chr22_test',
+  'refpanel': 'apps@topmed-r3',
+  'population': 'all',
+  'build': 'hg38',
+  'phasing': 'eagle',
+  'r2Filter': 0,
+  'meta': 'yes',
+}
+##  Submit job. Multiple files per chromosome
+file_paths = ['/home/rmb218/rds/hpc-work/interval/imputation/liftover/testing/batch_a_chr{}.vcf.gz'.format(i) for i in range(22,23)]
+files = [('files', open(file_path, 'rb')) for file_path in file_paths]
+
+endpoint = "/jobs/submit/imputationserver"
+resp = requests.post(base + endpoint, files=files, data=data, headers=headers)
+
+output = resp.json()
+
+if resp.status_code != 200:
+  print(output['message'])
+  raise Exception('POST {} {}'.format(endpoint, resp.status_code))
+else:
+    # print message
+    print(output['message'])
+    print(output['id'])
