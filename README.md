@@ -57,7 +57,7 @@ Information from Adam Butterworth and Tao Jiang outines that MAF filtering was n
 
 2. INTERVAL_Imputation.sh
 
-Takes in lifted over files, aligns to reference .fasta to create interva_refhg38.
+Takes in lifted over files, aligns to reference .fasta to create interval_refhg38.
 Splits INTERVAL into two batches (a and b), random process.
 Splits batches into 22 chromosomes, makes vcf files, and indexes them.
 
@@ -101,4 +101,4 @@ This is really just me organising the output, deleting temporary files, and zipp
 
 10. INTERVAL_PCA.sh
 
-Details the process for an ancestry PCA analysis with 1KG as the reference population (hg38). This is done for the >42K samples.
+Details the process for an ancestry PCA analysis with 1KG as the reference population (hg38). This is done for the >42K samples. Download hg38 reference data and process, merge with interval data, perform PCA.

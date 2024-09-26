@@ -117,7 +117,6 @@ plink2 --bfile Merge --write-snplist --out reference
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=rmb218@cam.ac.uk
 #SBATCH --account=BUTTERWORTH-SL3-CPU
-
 module load plink/2.00-alpha
 int_dir="/home/rmb218/rds/rds-jmmh2-projects/carriage_gwas/interval_data/pre_impute/"
 out_dir="/home/rmb218/rds/rds-jmmh2-projects/carriage_gwas/interval_analysis/pca/int_files/"
