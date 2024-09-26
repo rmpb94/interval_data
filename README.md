@@ -4,7 +4,8 @@
 
 All work for imputation of INTERVAL individuals (~42K) is organised in the following directory structure:
 ```
-└── 📁Imputation
+└── 📁interval_data
+
     └── 📁Post
         └── INTERVAL_ChromosomeFiltering.sh
         └── INTERVAL_ImputationProcessing.sh
@@ -16,10 +17,11 @@ All work for imputation of INTERVAL individuals (~42K) is organised in the follo
         └── INTERVAL_Liftover.sh
         └── INTERVAL_TOPMedExchange.sh
     └── 📁QC
+        └── .DS_Store
         └── INTERVAL_PostImputationQC.sh
-        └── INTERVAL_QC.sh
+        └── INTERVAL_QC_PCA.sh
+        └── INTERVAL_QC_PRE.sh
         └── INTERVALChromosomalQC.R
-        └── PCA.sh
     └── 📁Testing
         └── BCFtoolsLiftover.sh
         └── Chr22Merge.sh
@@ -32,6 +34,9 @@ All work for imputation of INTERVAL individuals (~42K) is organised in the follo
         └── TestingLiftover.sh
         └── TOPMedSubmission.txt
     └── .DS_Store
+    └── .gitattributes
+    └── INTERVAL_Organisation.sh
+    └── README.md
 ```
 
 ## Order of operations
@@ -93,3 +98,7 @@ Output QC files per chromosome.
 
 Organise all files related to the INTERVAL cohort created in this process. 
 This is really just me organising the output, deleting temporary files, and zipping, ready for other people to access.
+
+10. INTERVAL_PCA.sh
+
+Details the process for an ancestry PCA analysis with 1KG as the reference population (hg38). This is done for the >42K samples.
