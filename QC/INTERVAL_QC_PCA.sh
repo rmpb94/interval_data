@@ -131,29 +131,40 @@ plink2 --bfile ${out_dir}interval_pruned_hg38 --write-snplist --out ${out_dir}in
 ## Extract SNPs from both reference and INTERVAL cohorts
 out_dir="/home/rmb218/rds/rds-jmmh2-projects/carriage_gwas/interval_analysis/pca/"
 
-plink2 --bfile ${out_dir}int_files/interval_pruned_hg38 --extract ${out_dir}pca_snps.txt --make-bed --out ${out_dir}combined_files/interval
-plink2 --bfile ${out_dir}ref_files/Merge --extract ${out_dir}ref_pca_snps.txt --make-bed --out ${out_dir}combined_files/1kg
+plink2 --bfile ${out_dir}int_files/interval_pruned_hg38 --extract ${out_dir}int_snps.txt --make-bed --out ${out_dir}combined_files/interval
+plink2 --bfile ${out_dir}ref_files/Merge --extract ${out_dir}ref_snps.txt --make-bed --out ${out_dir}combined_files/1kg
 
-plink2 --bfile ${out_dir}combined_files/1kg --update-name ${out_dir}pca_snps_rename.txt 1 2 --make-bed --out ${out_dir}combined_files/1kg_renamed
-plink2 --bfile ${out_dir}combined_files/1kg_renamed --write-snplist --out ${out_dir}combined_files/test
+plink2 --bfile ${out_dir}combined_files/1kg --update-name ${out_dir}snps_in_common.txt 1 2 --make-bed --out ${out_dir}combined_files/1kg_renamed
+
+plink2 --bfile ${out_dir}combined_files/1kg_renamed --exclude int_pca_combined.missnp --make-bed --out ${out_dir}combined_files/1kg_renamed2
+plink2 --bfile ${out_dir}combined_files/interval --exclude int_pca_combined.missnp --make-bed --out ${out_dir}combined_files/interval2
+
+
+plink2 --bfile ${out_dir}combined_files/1kg_renamed2 --write-snplist --out ${out_dir}combined_files/test
 
 ## Files for merge
-/home/rmb218/rds/rds-jmmh2-projects/carriage_gwas/interval_analysis/pca/combined_files/interval
-/home/rmb218/rds/rds-jmmh2-projects/carriage_gwas/interval_analysis/pca/combined_files/1kg_renamed
+#/home/rmb218/rds/rds-jmmh2-projects/carriage_gwas/interval_analysis/pca/combined_files/interval
+#/home/rmb218/rds/rds-jmmh2-projects/carriage_gwas/interval_analysis/pca/combined_files/1kg_renamed
 module unload plink
 module load plink/1.9
-plink --bfile ${out_dir}combined_files/interval --bmerge ${out_dir}combined_files/1kg_renamed --out ${out_dir}combined_files/int_pca_combined
+plink --bfile ${out_dir}combined_files/interval2 --bmerge ${out_dir}combined_files/1kg_renamed2 --out ${out_dir}combined_files/int_pca_combined
 
-pca.sh
+
+module load plink/1.9
+out_dir="/home/rmb218/rds/rds-jmmh2-projects/carriage_gwas/interval_analysis/pca/"
+plink --bfile ${out_dir}combined_files/int_pca_combined --maf 0.1 --geno 0.03 --hwe 0.00000001 --mind 0.3 --make-bed --out ${out_dir}combined_files/int_pca_combined_filtered
+
+pca_pt2.sh
 #!/bin/bash
-#SBATCH --job-name=pca
-#SBATCH --output=/home/rmb218/hpc-work/jobs/interval/pca/out/pca.out
+#SBATCH --job-name=pca_pt2
+#SBATCH --output=/home/rmb218/hpc-work/jobs/interval/pca/out/pca_pt2.out
 #SBATCH --time=05:00:00
 #SBATCH --partition=icelake-himem
 #SBATCH --mem=30000
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=rmb218@cam.ac.uk
 #SBATCH --account=BUTTERWORTH-SL3-CPU
-module load plink/1.9
+module load flashpca/2.0
 out_dir="/home/rmb218/rds/rds-jmmh2-projects/carriage_gwas/interval_analysis/pca/"
-plink --bfile ${out_dir}combined_files/int_pca_combined --pca --out ${out_dir}int_pca
+cd ${out_dir}
+flashpca --bfile ${out_dir}combined_files/int_pca_combined_filtered
